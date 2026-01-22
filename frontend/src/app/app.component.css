@@ -1,0 +1,66 @@
+.pos-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Izquierda */
+.products-section {
+  flex: 2; /* Ocupa 2/3 de la pantalla */
+  background-color: #f4f4f4;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.1s;
+}
+.card:active { transform: scale(0.95); }
+.card.disabled { opacity: 0.5; pointer-events: none; }
+.price { font-weight: bold; color: #d35400; font-size: 1.2em; }
+
+/* Derecha */
+.cart-section {
+  flex: 1; /* Ocupa 1/3 de la pantalla */
+  padding: 20px;
+  border-left: 2px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-list { flex: 1; list-style: none; padding: 0; }
+.cart-list li {
+  display: flex; justify-content: space-between;
+  border-bottom: 1px solid #eee; padding: 10px 0;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.pay-btn:disabled { background-color: #ccc; }
+
+.ticket-success {
+  margin-top: 20px;
+  background: #d4edda;
+  padding: 10px;
+  border-radius: 5px;
+  color: #155724;
+}

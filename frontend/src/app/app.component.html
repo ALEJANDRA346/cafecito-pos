@@ -1,0 +1,55 @@
+<div class="pos-container">
+  
+  <div class="products-section">
+    <h2>☕ Menú</h2>
+    <div class="grid">
+      @for (product of products; track product._id) {
+        <div class="card" (click)="addToCart(product)" [class.disabled]="product.stock === 0">
+          <h3>{{ product.name }}</h3>
+          <p class="price">${{ product.price }}</p>
+          <small>Stock: {{ product.stock }}</small>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="cart-section">
+    <h2>🛒 Orden Actual</h2>
+    
+    <div class="customer-select">
+      <label>Cliente:</label>
+      <select [(ngModel)]="selectedCustomerId">
+        <option value="">-- Cliente Casual (Sin descuento) --</option>
+        @for (c of customers; track c._id) {
+          <option [value]="c._id">{{ c.name }} (Compras: {{c.purchasesCount}})</option>
+        }
+      </select>
+    </div>
+
+    <ul class="cart-list">
+      @for (item of cart; track item.productId) {
+        <li>
+          <span>{{ item.quantity }}x {{ item.name }}</span>
+          <span>${{ item.price * item.quantity }}</span>
+        </li>
+      }
+    </ul>
+
+    <div class="total-box">
+      <h3>Total Estimado: ${{ totalLocal }}</h3>
+      <button class="pay-btn" (click)="pay()" [disabled]="cart.length === 0">
+        ✅ COBRAR
+      </button>
+    </div>
+
+    @if (lastTicket) {
+      <div class="ticket-success">
+        <h4>🎉 ¡Venta Exitosa!</h4>
+        <p>Subtotal: ${{ lastTicket.ticket.subtotal }}</p>
+        <p><strong>Descuento: {{ lastTicket.ticket.discountPercent }}%</strong> (-${{ lastTicket.ticket.discountAmount }})</p>
+        <p class="final-total">Total Pagado: ${{ lastTicket.ticket.total }}</p>
+      </div>
+    }
+
+  </div>
+</div>

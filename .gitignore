@@ -1,0 +1,10 @@
+# Dependencias (se instalan con npm install)
+node_modules/
+
+# Variables de entorno (secretos)
+.env
+
+# Archivos de Angular
+.angular/
+dist/
+.vscode/

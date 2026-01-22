@@ -1,0 +1,19 @@
+### 1. Obtener lista de PRODUCTOS (Dale click a Send Request aquí abajo)
+GET http://localhost:3001/api/products
+
+### 2. Obtener lista de CLIENTES (Dale click a Send Request aquí abajo)
+GET http://localhost:3001/api/customers
+
+### 3. Crear Venta (Pegar IDs aquí)
+POST http://localhost:3001/api/sales
+Content-Type: application/json
+
+{
+  "customerId": "69715993fbd455051f81c815",
+  "items": [
+    { 
+      "productId": "69715993fbd455051f81c80e", 
+      "quantity": 1 
+    }
+  ]
+}
