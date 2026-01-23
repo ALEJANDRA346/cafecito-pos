@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const saleController = require('../controllers/saleController');
 
-router.post('/', saleController.createSale);
+// Importamos AMBAS funciones: crear venta y obtener historial
+const { createSale, getSales } = require('../controllers/saleController');
+
+// Ruta para cobrar (POST)
+router.post('/', createSale);
+
+// Ruta para ver historial (GET) <--- ¡Esta es la nueva!
+router.get('/', getSales);
 
 module.exports = router;

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { PosComponent } from './components/pos/pos.component';
 import { authGuard } from './guards/auth.guard'; // <--- 1. Importar al guardia
+import { SalesHistoryComponent } from './components/sales-history/sales-history.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -11,6 +12,12 @@ export const routes: Routes = [
     component: PosComponent,
     canActivate: [authGuard] // <--- 2. ¡Aquí ponemos al guardia! 🛡️
   },
+
+  { 
+  path: 'history', 
+  component: SalesHistoryComponent,
+  canActivate: [authGuard] // ¡También la protegemos!
+},
 
   { path: '**', redirectTo: '' }
 ];

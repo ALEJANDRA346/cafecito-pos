@@ -1,6 +1,6 @@
 /* Contenedor principal: Divide pantalla en 2 (Menú y Carrito) */
 .pos-container {
-  display: flex;
+  display: flex; /* <--- ESTO ES LA CLAVE PARA QUE SE VEAN LADO A LADO */
   height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f3f4f6;
@@ -8,9 +8,9 @@
 
 /* --- SECCIÓN IZQUIERDA: PRODUCTOS --- */
 .products-section {
-  flex: 2; /* Ocupa el 66% de la pantalla */
+  flex: 2;
   padding: 20px;
-  overflow-y: auto; /* Scroll si hay muchos productos */
+  overflow-y: auto;
 }
 
 .products-section h2 {
@@ -25,7 +25,6 @@
   gap: 20px;
 }
 
-/* Tarjetas de Producto */
 .card {
   background: white;
   padding: 15px;
@@ -43,20 +42,13 @@
   border-color: #3b82f6;
 }
 
-.card h3 {
-  margin: 10px 0;
-  font-size: 1.1rem;
-  color: #374151;
-}
-
 .price {
   font-weight: bold;
-  color: #059669; /* Verde */
+  color: #059669;
   font-size: 1.2rem;
   margin: 5px 0;
 }
 
-/* Producto sin stock */
 .card.disabled {
   opacity: 0.5;
   pointer-events: none;
@@ -65,7 +57,7 @@
 
 /* --- SECCIÓN DERECHA: CARRITO --- */
 .cart-section {
-  flex: 1; /* Ocupa el 33% */
+  flex: 1;
   background: white;
   padding: 20px;
   border-left: 1px solid #e5e7eb;
@@ -73,30 +65,55 @@
   flex-direction: column;
 }
 
-.customer-select {
-  margin-bottom: 20px;
-}
-
-.customer-select label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.customer-select select {
-  width: 100%;
+/* HEADER USUARIO Y BOTONES */
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  background-color: #eef2ff;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
 }
 
-/* Lista de items */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.logout-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.history-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin-bottom: 15px;
+}
+
+/* RESTO DEL CARRITO */
+.customer-select { margin-bottom: 20px; }
+.customer-select select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #d1d5db; }
+
 .cart-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-grow: 1; /* Empuja el total hacia abajo */
+  flex-grow: 1;
   overflow-y: auto;
 }
 
@@ -107,7 +124,6 @@
   border-bottom: 1px solid #f3f4f6;
 }
 
-/* Caja de Total y Botón */
 .total-box {
   background: #f9fafb;
   padding: 20px;
@@ -127,19 +143,8 @@
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
-  transition: background 0.3s;
 }
 
-.pay-btn:hover {
-  background-color: #1d4ed8;
-}
-
-.pay-btn:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
-}
-
-/* Ticket de éxito */
 .ticket-success {
   margin-top: 20px;
   padding: 15px;
@@ -147,35 +152,4 @@
   border: 1px solid #34d399;
   border-radius: 8px;
   color: #065f46;
-}
-
-/* --- HEADER USUARIO --- */
-.user-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  background-color: #eef2ff; /* Azulito muy claro */
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.logout-btn {
-  background-color: #ef4444; /* Rojo suave */
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.logout-btn:hover {
-  background-color: #dc2626; /* Rojo más fuerte */
-}
-
-hr {
-  border: 0;
-  border-top: 1px solid #e5e7eb;
-  margin-bottom: 15px;
 }

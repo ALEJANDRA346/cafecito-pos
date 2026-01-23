@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router'; // <--- NUEVO
+import { Router } from '@angular/router';
 
 import { ProductService } from '../../services/product.service';
 import { PosService } from '../../services/pos.service';
-import { AuthService } from '../../services/auth.service'; // <--- NUEVO
+import { AuthService } from '../../services/auth.service';
 import { Product } from '../../models/product.model';
 import { Customer } from '../../models/customer.model';
 
@@ -17,28 +17,24 @@ import { Customer } from '../../models/customer.model';
   styleUrl: './pos.component.css'
 })
 export class PosComponent implements OnInit {
-  // Servicios
   private productService = inject(ProductService);
   private posService = inject(PosService);
-  private authService = inject(AuthService); // <--- NUEVO
-  private router = inject(Router);           // <--- NUEVO
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  // Datos
   products: Product[] = [];
   customers: Customer[] = [];
-  currentUser: any = null; // <--- Para guardar quién es el usuario
+  currentUser: any = null;
   
-  // Estado del Carrito
   cart: any[] = [];
   selectedCustomerId: string = '';
   totalLocal: number = 0;
   
-  // Mensaje de éxito/ticket
   lastTicket: any = null;
 
   ngOnInit() {
     this.loadData();
-    this.currentUser = this.authService.getUser(); // <--- Obtenemos el usuario al iniciar
+    this.currentUser = this.authService.getUser();
   }
 
   loadData() {
@@ -79,7 +75,6 @@ export class PosComponent implements OnInit {
 
     this.posService.createSale(saleRequest).subscribe({
       next: (response) => {
-        console.log('Venta exitosa:', response);
         this.lastTicket = response;
         this.cart = [];
         this.totalLocal = 0;
@@ -87,15 +82,17 @@ export class PosComponent implements OnInit {
         this.loadData();
       },
       error: (err) => {
-        alert('Error en la venta: ' + (err.error.error || 'Desconocido'));
-        console.error(err);
+        alert('Error: ' + (err.error.error || 'Desconocido'));
       }
     });
   }
 
-  // <--- NUEVA FUNCIÓN PARA SALIR
   logout() {
-    this.authService.logout(); // Borra el token
-    this.router.navigate(['/login']); // Nos manda a la puerta
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  goToHistory() {
+    this.router.navigate(['/history']);
   }
 }

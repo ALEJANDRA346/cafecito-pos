@@ -19,4 +19,9 @@ export class PosService {
   createSale(saleData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/sales`, saleData);
   }
+
+  getSales(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/sales`);
 }
+}
+

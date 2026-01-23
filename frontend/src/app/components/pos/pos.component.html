@@ -14,11 +14,16 @@
   </div>
 
   <div class="cart-section">
+    
     <div class="user-header">
       <span>Hola, <strong>{{ currentUser?.username }}</strong> 👋</span>
-      <button class="logout-btn" (click)="logout()">Salir</button>
+      <div class="header-buttons">
+        <button class="history-btn" (click)="goToHistory()">📊 Historial</button>
+        <button class="logout-btn" (click)="logout()">Salir</button>
+      </div>
     </div>
     <hr>
+
     <h2>🛒 Orden Actual</h2>
     
     <div class="customer-select">
@@ -26,7 +31,13 @@
       <select [(ngModel)]="selectedCustomerId">
         <option value="">-- Cliente Casual (Sin descuento) --</option>
         @for (c of customers; track c._id) {
-          <option [value]="c._id">{{ c.name }} (Compras: {{c.purchasesCount}})</option>
+          <option [value]="c._id">
+            {{ c.name }} — 
+            {{ c.purchasesCount >= 8 ? '🌟 VIP (15%)' : 
+               (c.purchasesCount >= 4 ? '🥇 Oro (10%)' : 
+               (c.purchasesCount >= 1 ? '🥈 Plata (5%)' : '☕ Nuevo (0%)')) 
+            }}
+          </option>
         }
       </select>
     </div>

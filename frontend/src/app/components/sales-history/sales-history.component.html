@@ -1,0 +1,50 @@
+<div class="history-container">
+  
+  <div class="header">
+    <h1>📊 Historial de Ventas</h1>
+    <a routerLink="/" class="back-btn">⬅ Regresar a Caja</a>
+  </div>
+
+  @if (loading) {
+    <p>Cargando datos...</p>
+  } @else {
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Productos</th>
+            <th>Descuento</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sale of sales; track sale._id) {
+            <tr>
+              <td>{{ sale.createdAt | date:'short' }}</td>
+              <td>
+                {{ sale.customerId?.name || 'Cliente Casual' }}
+              </td>
+              <td>
+                <ul>
+                  @for (item of sale.items; track $index) {
+                    <li>{{ item.quantity }}x {{ item.productId?.name || 'Producto' }}</li>
+                  }
+                </ul>
+              </td>
+              <td>
+                @if(sale.discountPercent > 0) {
+                  <span class="badge-discount">-{{ sale.discountPercent }}%</span>
+                } @else {
+                  -
+                }
+              </td>
+              <td class="total-col">${{ sale.total | number:'1.2-2' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
