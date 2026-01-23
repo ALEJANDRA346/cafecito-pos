@@ -1,8 +1,11 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const connectDB = require('./src/config/database');
+
+// Importamos los modelos (incluyendo el nuevo User)
 const Product = require('./src/models/Product');
 const Customer = require('./src/models/Customer');
+const User = require('./src/models/User'); // <--- NUEVO
 
 const seedData = async () => {
   try {
@@ -13,8 +16,25 @@ const seedData = async () => {
     console.log('🗑️  Borrando datos anteriores...');
     await Product.deleteMany();
     await Customer.deleteMany();
+    await User.deleteMany(); // <--- NUEVO: Borramos usuarios viejos
 
-    // 3. Insertar Productos de prueba
+    // 3. Insertar Usuarios de Sistema (Login)
+    console.log('👤 Creando usuarios (Admin y Vendedor)...');
+    
+    // Usamos .create() uno por uno para que se active la encriptación automática
+    await User.create({
+      username: 'admin',
+      password: '123456', // El modelo lo encriptará
+      role: 'admin'
+    });
+
+    await User.create({
+      username: 'vendedor',
+      password: '123456',
+      role: 'vendor'
+    });
+
+    // 4. Insertar Productos de prueba
     console.log('☕ Insertando productos...');
     await Product.insertMany([
       { name: 'Café Americano', price: 40, stock: 100 },
@@ -25,12 +45,12 @@ const seedData = async () => {
       { name: 'Galleta de Avena', price: 25, stock: 30 }
     ]);
 
-    // 4. Insertar Clientes de prueba
+    // 5. Insertar Clientes de prueba
     console.log('👥 Insertando clientes...');
     await Customer.insertMany([
       { name: 'Cliente Nuevo', phoneOrEmail: 'nuevo@test.com', purchasesCount: 0 },
-      { name: 'Cliente Frecuente', phoneOrEmail: 'frecuente@test.com', purchasesCount: 5 }, // Tendrá 10% desc
-      { name: 'Cliente VIP', phoneOrEmail: 'vip@test.com', purchasesCount: 12 } // Tendrá 15% desc
+      { name: 'Cliente Frecuente', phoneOrEmail: 'frecuente@test.com', purchasesCount: 5 }, 
+      { name: 'Cliente VIP', phoneOrEmail: 'vip@test.com', purchasesCount: 12 } 
     ]);
 
     console.log('✅ ¡Datos insertados correctamente!');

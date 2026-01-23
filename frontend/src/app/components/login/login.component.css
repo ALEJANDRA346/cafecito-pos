@@ -1,0 +1,114 @@
+/* Fondo de toda la pantalla */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #fdfbf7 0%, #e5e7eb 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* La tarjeta blanca central */
+.login-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  border: 1px solid #f3f4f6;
+}
+
+/* Encabezado (Icono y Títulos) */
+.header .icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.8rem;
+}
+
+.header p {
+  color: #6b7280;
+  margin-top: 5px;
+  margin-bottom: 30px;
+}
+
+/* Inputs y Etiquetas */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box; /* Importante para que no se salga del borde */
+}
+
+.form-group input:focus {
+  border-color: #d97706; /* Color Café/Naranja al escribir */
+  outline: none;
+  background-color: #fffbeb;
+}
+
+/* Botón de Ingresar */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #2563eb; /* Azul corporativo */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+  margin-top: 10px;
+}
+
+.login-btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+/* Mensaje de Error */
+.error-alert {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Footer pequeño */
+.footer-text {
+  margin-top: 30px;
+  color: #9ca3af;
+}

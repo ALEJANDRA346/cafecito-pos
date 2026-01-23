@@ -1,0 +1,47 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="header">
+      <div class="icon">☕</div>
+      <h2>Bienvenido al POS</h2>
+      <p>Inicia sesión para comenzar a vender</p>
+    </div>
+
+    @if (errorMessage) {
+      <div class="error-alert">
+        ⚠️ {{ errorMessage }}
+      </div>
+    }
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Usuario</label>
+        <input 
+          type="text" 
+          [(ngModel)]="username" 
+          name="username" 
+          placeholder="Ej: admin" 
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input 
+          type="password" 
+          [(ngModel)]="password" 
+          name="password" 
+          placeholder="••••••" 
+          required
+        >
+      </div>
+
+      <button type="submit" class="login-btn">
+        Ingresar
+      </button>
+    </form>
+    
+    <div class="footer-text">
+      <small>Cafecito POS v1.0</small>
+    </div>
+  </div>
+</div>
