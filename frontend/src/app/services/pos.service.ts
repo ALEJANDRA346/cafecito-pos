@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Customer } from '../models/customer.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PosService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3001/api';
+  private apiUrl = environment.apiUrl;
 
   // Traer clientes para el selector
   getCustomers(): Observable<Customer[]> {

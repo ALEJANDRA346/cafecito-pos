@@ -153,3 +153,100 @@ hr {
   border-radius: 8px;
   color: #065f46;
 }
+
+/* ... resto de tu css ... */
+
+.ticket-details p {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.loyalty-msg {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #047857; /* Verde oscuro elegante */
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.inventory-btn {
+  background-color: #8b5cf6; /* Morado */
+  color: white;
+  border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-weight: bold;
+}
+.inventory-btn:hover { background-color: #7c3aed; }
+
+/* Cabecera del menú */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px; /* Espacio entre título y buscador */
+}
+
+.menu-header h2 {
+  margin: 0;
+  white-space: nowrap; /* Que no se rompa el título */
+}
+
+/* Caja del Buscador */
+.search-box {
+  position: relative;
+  flex: 1; /* Ocupa el espacio restante */
+  max-width: 300px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 35px 10px 35px; /* Espacio para iconos a los lados */
+  border: 1px solid #d1d5db;
+  border-radius: 20px; /* Bordes redondeados modernos */
+  outline: none;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  box-sizing: border-box; /* Importante para que no se salga */
+}
+
+.search-box input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Icono Lupa */
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* Botón Limpiar (X) */
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+}
+.clear-btn:hover { color: #ef4444; }
+
+/* Mensaje sin resultados */
+.no-results {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  width: 100%;
+  font-style: italic;
+}

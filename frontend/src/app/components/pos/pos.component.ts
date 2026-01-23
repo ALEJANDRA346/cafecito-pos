@@ -32,6 +32,9 @@ export class PosComponent implements OnInit {
   
   lastTicket: any = null;
 
+  // --- NUEVO: Variable para el buscador ---
+  searchText: string = '';
+
   ngOnInit() {
     this.loadData();
     this.currentUser = this.authService.getUser();
@@ -40,6 +43,20 @@ export class PosComponent implements OnInit {
   loadData() {
     this.productService.getProducts().subscribe(data => this.products = data);
     this.posService.getCustomers().subscribe(data => this.customers = data);
+  }
+
+  // --- NUEVO: Lógica del Filtro Mágico ---
+  get filteredProducts() {
+    // 1. Si no hay texto, devolvemos todo el menú
+    if (!this.searchText.trim()) {
+      return this.products;
+    }
+    
+    // 2. Si hay texto, filtramos (ignorando mayúsculas)
+    const search = this.searchText.toLowerCase();
+    return this.products.filter(product => 
+      product.name.toLowerCase().includes(search)
+    );
   }
 
   addToCart(product: Product) {
@@ -79,7 +96,7 @@ export class PosComponent implements OnInit {
         this.cart = [];
         this.totalLocal = 0;
         this.selectedCustomerId = '';
-        this.loadData();
+        this.loadData(); // Recargamos para actualizar stock y puntos del cliente
       },
       error: (err) => {
         alert('Error: ' + (err.error.error || 'Desconocido'));

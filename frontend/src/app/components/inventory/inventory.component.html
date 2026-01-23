@@ -1,0 +1,69 @@
+<div class="inventory-container">
+  
+  <div class="header">
+    <h1>📦 Inventario de Productos</h1>
+    <a routerLink="/" class="back-link">⬅ Ir a Caja</a>
+  </div>
+
+  @if (!showForm) {
+    <div class="actions-bar">
+      <button class="btn-create" (click)="openCreateForm()">➕ Nuevo Producto</button>
+    </div>
+
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of products; track product._id) {
+          <tr>
+            <td><strong>{{ product.name }}</strong></td>
+            <td>${{ product.price }}</td>
+            <td>
+              <span [class.low-stock]="product.stock < 10">{{ product.stock }}</span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-edit" (click)="openEditForm(product)">✏️</button>
+              <button class="btn-delete" (click)="deleteProduct(product._id || '')">🗑️</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (showForm) {
+    <div class="form-card">
+      <h2>{{ isEditing ? '✏️ Editar Producto' : '✨ Nuevo Producto' }}</h2>
+      
+      <div class="form-group">
+        <label>Nombre del Producto</label>
+        <input [(ngModel)]="currentProduct.name" type="text" placeholder="Ej. Latte Vainilla">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Precio ($)</label>
+          <input [(ngModel)]="currentProduct.price" type="number">
+        </div>
+        <div class="form-group">
+          <label>Stock Inicial</label>
+          <input [(ngModel)]="currentProduct.stock" type="number">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="closeForm()">Cancelar</button>
+        <button class="btn-save" (click)="saveProduct()">
+          {{ isEditing ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  }
+
+</div>
