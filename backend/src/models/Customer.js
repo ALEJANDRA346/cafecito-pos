@@ -5,10 +5,14 @@ const customerSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
-  phoneOrEmail: { 
+  email: { 
     type: String, 
-    required: true, 
-    unique: true 
+    required: true, // ¡Ahora es obligatorio!
+    unique: true    // No queremos correos repetidos
+  },
+  phone: { 
+    type: String, 
+    required: false // Este sí es opcional
   },
   purchasesCount: { 
     type: Number, 

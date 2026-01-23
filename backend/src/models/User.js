@@ -2,40 +2,31 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true // No puede haber dos usuarios con el mismo nombre
+  username: { 
+    type: String, 
+    required: true, 
+    unique: true 
   },
-  password: {
-    type: String,
-    required: true
+  password: { 
+    type: String, 
+    required: true 
   },
-  role: {
-    type: String,
-    enum: ['admin', 'vendor'], // Solo permitimos estos dos roles
-    default: 'vendor'
+  role: { 
+    type: String, 
+    enum: ['admin', 'vendedor', 'user'], 
+    default: 'vendedor' 
   }
-}, {
-  timestamps: true // Guarda la fecha de creación automáticamente
 });
 
-// --- MAGIA DE SEGURIDAD 🔒 ---
-
-// 1. Antes de guardar, encriptar la contraseña
-userSchema.pre('save', async function (next) {
-  // Si la contraseña no se modificó, no hacemos nada
-  if (!this.isModified('password')) {
-    next();
-  }
-  
-  // Generamos una "sal" (código aleatorio) y encriptamos
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+// --- CORRECCIÓN AQUÍ ---
+// Quitamos 'next' de los parámetros.
+// Al ser 'async', Mongoose sabe que cuando la función termine, puede seguir.
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) return; // Solo retornamos vacío
+  this.password = await bcrypt.hash(this.password, 10);
 });
 
-// 2. Método para comparar contraseñas (usado al hacer Login)
-userSchema.methods.matchPassword = async function (enteredPassword) {
+userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

@@ -1,0 +1,132 @@
+/* Fondo general */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+}
+
+/* Tarjeta central */
+.card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 450px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-header h2 {
+  margin: 0 0 10px 0;
+  color: #111827;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.card-header p {
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+}
+
+/* Inputs */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.optional {
+  font-weight: normal;
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  background-color: #eff6ff;
+}
+
+/* Estado de Error */
+.input-error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.input-error:focus {
+  border-color: #dc2626;
+}
+
+.error-msg {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+  font-weight: 500;
+}
+
+/* Botones */
+.actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.cancel {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+.cancel:hover { background-color: #e5e7eb; }
+
+.save {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+.save:hover { background-color: #1d4ed8; }
+.save:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}

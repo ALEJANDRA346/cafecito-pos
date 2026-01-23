@@ -1,0 +1,54 @@
+<div class="form-container">
+  <div class="card">
+    <div class="card-header">
+      <h2>👤 Nuevo Cliente</h2>
+      <p>Ingresa los datos para registrarlo en el sistema.</p>
+    </div>
+
+    <div class="form-group">
+      <label>Nombre Completo *</label>
+      <input 
+        [(ngModel)]="name" 
+        (blur)="checkValidation()"
+        [class.input-error]="nameError"
+        type="text" 
+        placeholder="Ej. María Pérez">
+      
+      @if (nameError) {
+        <small class="error-msg">❌ {{ nameError }}</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Correo Electrónico *</label>
+      <input 
+        [(ngModel)]="email" 
+        (blur)="checkValidation()"
+        [class.input-error]="emailError"
+        type="email" 
+        placeholder="cliente&#64;email.com">
+
+      @if (emailError) {
+        <small class="error-msg">❌ {{ emailError }}</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Teléfono <span class="optional">(Opcional)</span></label>
+      <input 
+        [(ngModel)]="phone" 
+        type="tel" 
+        placeholder="Ej. 555-0000">
+    </div>
+
+    <div class="actions">
+      <button class="btn cancel" (click)="cancel()">Cancelar</button>
+      <button 
+        class="btn save" 
+        (click)="saveCustomer()" 
+        [disabled]="nameError || emailError || !name || !email || isLoading">
+        {{ isLoading ? 'Guardando...' : '💾 Guardar Cliente' }}
+      </button>
+    </div>
+  </div>
+</div>

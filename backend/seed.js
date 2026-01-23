@@ -1,59 +1,78 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const connectDB = require('./src/config/database');
-
-// Importamos los modelos (incluyendo el nuevo User)
 const Product = require('./src/models/Product');
 const Customer = require('./src/models/Customer');
-const User = require('./src/models/User'); // <--- NUEVO
+const User = require('./src/models/User');
 
-const seedData = async () => {
+mongoose.connect(process.env.DB_CONNECTION_STRING)
+  .then(() => console.log('✅ MongoDB Conectado'))
+  .catch(err => console.log(err));
+
+const seedDB = async () => {
   try {
-    // 1. Conectar a la BD
-    await connectDB();
-
-    // 2. Borrar datos viejos (Limpiar la casa)
+    // 1. Limpiar datos viejos y eliminar índices corruptos
     console.log('🗑️  Borrando datos anteriores...');
-    await Product.deleteMany();
-    await Customer.deleteMany();
-    await User.deleteMany(); // <--- NUEVO: Borramos usuarios viejos
+    await Product.deleteMany({});
+    await User.deleteMany({});
 
-    // 3. Insertar Usuarios de Sistema (Login)
-    console.log('👤 Creando usuarios (Admin y Vendedor)...');
-    
-    // Usamos .create() uno por uno para que se active la encriptación automática
-    await User.create({
-      username: 'admin',
-      password: '123456', // El modelo lo encriptará
-      role: 'admin'
-    });
+    // BORRADO NUCLEAR: Borramos la colección entera de clientes
+    // Esto elimina el índice fantasma "phoneOrEmail" que te da el error
+    try {
+      await Customer.collection.drop();
+    } catch (e) {
+      // Ignoramos error si la colección no existía aún
+    }
 
-    await User.create({
-      username: 'vendedor',
-      password: '123456',
-      role: 'vendor'
-    });
+    // 2. Crear Usuarios
+    console.log('👤 Creando usuarios...');
+    const admin = new User({ username: 'admin', password: '123456', role: 'admin' });
+    const vendedor = new User({ username: 'vendedor', password: '123456', role: 'vendedor' });
+    await admin.save();
+    await vendedor.save();
 
-    // 4. Insertar Productos de prueba
+    // 3. Crear Productos
     console.log('☕ Insertando productos...');
-    await Product.insertMany([
-      { name: 'Café Americano', price: 40, stock: 100 },
-      { name: 'Capuchino', price: 55, stock: 50 },
-      { name: 'Latte', price: 55, stock: 50 },
-      { name: 'Espresso', price: 35, stock: 80 },
-      { name: 'Muffin de Chocolate', price: 45, stock: 20 },
-      { name: 'Galleta de Avena', price: 25, stock: 30 }
-    ]);
+    const products = [
+      { name: 'Café Americano', price: 35, stock: 100 },
+      { name: 'Cappuccino', price: 45, stock: 50 },
+      { name: 'Latte', price: 45, stock: 50 },
+      { name: 'Espresso Doble', price: 30, stock: 80 },
+      { name: 'Muffin de Chocolate', price: 25, stock: 20 },
+      { name: 'Bagel con Queso', price: 40, stock: 15 }
+    ];
+    await Product.insertMany(products);
 
-    // 5. Insertar Clientes de prueba
+    // 4. Crear Clientes (Ahora sí entrarán limpios)
     console.log('👥 Insertando clientes...');
-    await Customer.insertMany([
-      { name: 'Cliente Nuevo', phoneOrEmail: 'nuevo@test.com', purchasesCount: 0 },
-      { name: 'Cliente Frecuente', phoneOrEmail: 'frecuente@test.com', purchasesCount: 5 }, 
-      { name: 'Cliente VIP', phoneOrEmail: 'vip@test.com', purchasesCount: 12 } 
-    ]);
+    const customers = [
+      { 
+        name: 'Cliente Nuevo', 
+        email: 'nuevo@test.com', 
+        phone: '555-0001', 
+        purchasesCount: 0 
+      },
+      { 
+        name: 'Cliente Plata', 
+        email: 'plata@test.com', 
+        phone: '555-0002', 
+        purchasesCount: 2 
+      },
+      { 
+        name: 'Cliente Oro', 
+        email: 'oro@test.com', 
+        phone: '555-0003', 
+        purchasesCount: 5 
+      },
+      { 
+        name: 'Cliente VIP', 
+        email: 'vip@test.com', 
+        phone: '555-0004', 
+        purchasesCount: 12 
+      }
+    ];
+    await Customer.insertMany(customers);
 
-    console.log('✅ ¡Datos insertados correctamente!');
+    console.log('✨ ¡Base de datos poblada con éxito!');
     process.exit();
   } catch (error) {
     console.error('❌ Error en el seed:', error);
@@ -61,4 +80,4 @@ const seedData = async () => {
   }
 };
 
-seedData();
+seedDB();

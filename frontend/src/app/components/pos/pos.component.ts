@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { ProductService } from '../../services/product.service';
 import { PosService } from '../../services/pos.service';
@@ -12,7 +12,7 @@ import { Customer } from '../../models/customer.model';
 @Component({
   selector: 'app-pos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './pos.component.html',
   styleUrl: './pos.component.css'
 })

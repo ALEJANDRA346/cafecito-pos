@@ -15,6 +15,11 @@ export class PosService {
     return this.http.get<Customer[]>(`${this.apiUrl}/customers`);
   }
 
+  // --- NUEVO: Crear Cliente ---
+  createCustomer(customerData: any): Observable<Customer> {
+    return this.http.post<Customer>(`${this.apiUrl}/customers`, customerData);
+  }
+
   // Enviar la venta al backend
   createSale(saleData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/sales`, saleData);

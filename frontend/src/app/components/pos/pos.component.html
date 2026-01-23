@@ -27,7 +27,12 @@
     <h2>🛒 Orden Actual</h2>
     
     <div class="customer-select">
-      <label>Cliente:</label>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <label>Cliente:</label>
+        <a routerLink="/new-customer" style="color: #2563eb; text-decoration: none; font-weight: bold; font-size: 0.9rem;">
+          ➕ Nuevo
+        </a>
+      </div>
       <select [(ngModel)]="selectedCustomerId">
         <option value="">-- Cliente Casual (Sin descuento) --</option>
         @for (c of customers; track c._id) {
