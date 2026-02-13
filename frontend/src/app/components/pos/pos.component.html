@@ -94,24 +94,26 @@
         
         <div class="ticket-details">
             <p>Subtotal: <span>${{ lastTicket.ticket.subtotal | number:'1.2-2' }}</span></p>
+            
             <p class="discount-row">
-                Descuento ({{ lastTicket.ticket.discountPercent }}%): 
-                <span>-${{ lastTicket.ticket.discountAmount | number:'1.2-2' }}</span>
+                Descuento: 
+                <span>{{ lastTicket.ticket.discount }}</span>
             </p>
+            
             <p class="final-total">Total: ${{ lastTicket.ticket.total | number:'1.2-2' }}</p>
         </div>
 
         <hr style="border-top: 1px dashed #065f46; opacity: 0.5;">
 
         <div class="loyalty-msg">
-            @if(lastTicket.ticket.discountPercent === 0) {
-              <p>👋 <em>"¡Bienvenido a Cafecito Feliz! Sigue comprando para desbloquear descuentos."</em></p>
-            } @else if(lastTicket.ticket.discountPercent === 5) {
-              <p>🥈 <em>"¡Tienes Nivel Plata! Tienes 5% de descuento por tu lealtad."</em></p>
-            } @else if(lastTicket.ticket.discountPercent === 10) {
-              <p>🥇 <em>"¡Nivel Oro! Gracias por ser cliente frecuente. Disfruta tu 10%."</em></p>
-            } @else if(lastTicket.ticket.discountPercent === 15) {
-              <p>🌟 <em>"¡ERES VIP! El máximo honor. 15% de descuento siempre."</em></p>
+            @if(lastTicket.discount_percent === 0) {
+              <p>👋 <em>"Sigue comprando para desbloquear descuentos."</em></p>
+            } @else if(lastTicket.discount_percent === 5) {
+              <p>🥈 <em>"¡Nivel Plata! 5% aplicado."</em></p>
+            } @else if(lastTicket.discount_percent === 10) {
+              <p>🥇 <em>"¡Nivel Oro! 10% aplicado."</em></p>
+            } @else if(lastTicket.discount_percent === 15) {
+              <p>🌟 <em>"¡ERES VIP! 15% aplicado."</em></p>
             }
         </div>
 

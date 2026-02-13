@@ -1,56 +1,93 @@
 const Product = require('../models/Product');
+const { formatResource, error, success } = require('../utils/responseHandler');
 
-// 1. Obtener todos (Ya lo tenías)
+// 1. Obtener todos (Con Paginación y Búsqueda)
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al obtener productos' });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const q = req.query.q || '';
+
+    // Validación de query params
+    if (limit < 1 || limit > 100) {
+      return error(res, 400, "Invalid query parameter", [
+        { field: "limit", message: "limit must be between 1 and 100" }
+      ]);
+    }
+
+    // Filtro de búsqueda
+    const filter = {};
+    if (q) {
+      filter.name = { $regex: q, $options: 'i' };
+    }
+
+    const total = await Product.countDocuments(filter);
+    const products = await Product.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    // Respuesta estandarizada
+    success(res, 200, {
+      data: products.map(p => formatResource(p)),
+      total,
+      page,
+      limit
+    });
+
+  } catch (err) {
+    error(res, 500, "Error al obtener productos");
   }
 };
 
-// 2. Crear Producto (NUEVO)
+// 2. Crear Producto
 exports.createProduct = async (req, res) => {
   try {
     const { name, price, stock } = req.body;
     
-    if (!name || !price) {
-      return res.status(400).json({ error: 'Nombre y precio son obligatorios' });
+    // Validación estricta (422)
+    if (!name || price === undefined) {
+      return error(res, 422, "Validation failed", [
+        { field: "name", message: "required" },
+        { field: "price", message: "required" }
+      ]);
     }
 
     const newProduct = new Product({ name, price, stock });
     await newProduct.save();
     
-    res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al crear producto' });
+    success(res, 201, formatResource(newProduct));
+  } catch (err) {
+    error(res, 500, "Error al crear producto");
   }
 };
 
-// 3. Editar Producto (NUEVO)
+// 3. Editar Producto
 exports.updateProduct = async (req, res) => {
   try {
-    const { id } = req.params; // El ID viene en la URL
+    const { id } = req.params;
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
     
     if (!updatedProduct) {
-      return res.status(404).json({ error: 'Producto no encontrado' });
+      return error(res, 404, "Product not found", { id });
     }
     
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar producto' });
+    success(res, 200, formatResource(updatedProduct));
+  } catch (err) {
+    error(res, 500, "Error al actualizar producto");
   }
 };
 
-// 4. Eliminar Producto (NUEVO)
+// 4. Eliminar Producto
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    await Product.findByIdAndDelete(id);
-    res.json({ message: 'Producto eliminado correctamente' });
-  } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar producto' });
+    const deleted = await Product.findByIdAndDelete(id);
+    
+    if (!deleted) return error(res, 404, "Product not found");
+
+    success(res, 200, { message: 'Product deleted successfully', id });
+  } catch (err) {
+    error(res, 500, "Error al eliminar producto");
   }
 };

@@ -1,7 +1,7 @@
 <div class="inventory-container">
   
   <div class="header">
-    <h1>📦 Inventario de Productos</h1>
+    <h1>📦 Inventario</h1>
     <a routerLink="/" class="back-link">⬅ Ir a Caja</a>
   </div>
 
@@ -23,9 +23,11 @@
         @for (product of products; track product._id) {
           <tr>
             <td><strong>{{ product.name }}</strong></td>
-            <td>${{ product.price }}</td>
+            <td>${{ product.price | number:'1.2-2' }}</td>
             <td>
-              <span [class.low-stock]="product.stock < 10">{{ product.stock }}</span>
+              <span [class.low-stock]="product.stock < 10" [class.no-stock]="product.stock === 0">
+                {{ product.stock }}
+              </span>
             </td>
             <td class="actions-cell">
               <button class="btn-edit" (click)="openEditForm(product)">✏️</button>
@@ -41,29 +43,68 @@
     <div class="form-card">
       <h2>{{ isEditing ? '✏️ Editar Producto' : '✨ Nuevo Producto' }}</h2>
       
-      <div class="form-group">
-        <label>Nombre del Producto</label>
-        <input [(ngModel)]="currentProduct.name" type="text" placeholder="Ej. Latte Vainilla">
-      </div>
-
-      <div class="form-row">
+      <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+        
         <div class="form-group">
-          <label>Precio ($)</label>
-          <input [(ngModel)]="currentProduct.price" type="number">
+          <label>Nombre del Producto *</label>
+          <input 
+            formControlName="name" 
+            type="text" 
+            placeholder="Ej. Latte Vainilla"
+            [class.input-error]="hasError('name', 'required') || hasError('name', 'minlength')"
+          >
+          @if (hasError('name', 'required')) {
+            <small class="error-msg">⚠️ El nombre es obligatorio.</small>
+          }
+          @if (hasError('name', 'minlength')) {
+            <small class="error-msg">⚠️ Mínimo 3 letras.</small>
+          }
         </div>
-        <div class="form-group">
-          <label>Stock Inicial</label>
-          <input [(ngModel)]="currentProduct.stock" type="number">
-        </div>
-      </div>
 
-      <div class="form-actions">
-        <button class="btn-cancel" (click)="closeForm()">Cancelar</button>
-        <button class="btn-save" (click)="saveProduct()">
-          {{ isEditing ? 'Actualizar' : 'Guardar' }}
-        </button>
-      </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Precio ($) *</label>
+            <input 
+              formControlName="price" 
+              type="number" 
+              placeholder="0.00"
+              [class.input-error]="hasError('price', 'required') || hasError('price', 'min')"
+            >
+            @if (hasError('price', 'required')) {
+              <small class="error-msg">⚠️ Precio requerido.</small>
+            }
+            @if (hasError('price', 'min')) {
+              <small class="error-msg">⚠️ Mínimo $0.50.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Stock Inicial *</label>
+            <input 
+              formControlName="stock" 
+              type="number"
+              [class.input-error]="hasError('stock', 'required') || hasError('stock', 'min')"
+            >
+            @if (hasError('stock', 'min')) {
+              <small class="error-msg">⚠️ No puede ser negativo.</small>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeForm()">Cancelar</button>
+          
+          <button 
+            type="submit" 
+            class="btn-save" 
+            [disabled]="productForm.invalid"
+            [title]="productForm.invalid ? 'Corrige los errores' : 'Guardar cambios'"
+          >
+            {{ isEditing ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+
+      </form>
     </div>
   }
-
 </div>

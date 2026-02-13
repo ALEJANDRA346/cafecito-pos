@@ -1,65 +1,63 @@
 .history-container {
-  padding: 40px;
-  max-width: 1000px;
-  margin: 0 auto;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
   font-family: 'Segoe UI', sans-serif;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f3f4f6;
 }
 
-.back-btn {
-  background-color: #4b5563;
-  color: white;
-  padding: 10px 20px;
+h2 { margin: 0; color: #1f2937; }
+
+.back-link {
   text-decoration: none;
-  border-radius: 8px;
+  color: #2563eb;
   font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: background 0.2s;
 }
 
-table {
+.back-link:hover { background-color: #eff6ff; }
+
+/* Tabla */
+.history-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  border-radius: 10px;
-  overflow: hidden;
 }
 
 th, td {
-  padding: 15px;
+  padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
 th {
-  background-color: #f3f4f6;
-  font-weight: bold;
-  color: #374151;
+  background-color: #f9fafb;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
 }
+
+tr:hover { background-color: #f9fafb; }
 
 .total-col {
   font-weight: bold;
-  color: #059669;
+  color: #059669; /* Verde dinero */
 }
 
-.badge-discount {
-  background-color: #dbeafe;
-  color: #1e40af;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: bold;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: 0.9rem;
-  color: #6b7280;
+.id-col {
+  color: #9ca3af;
+  font-family: monospace;
 }

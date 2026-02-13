@@ -22,13 +22,11 @@ export class SalesHistoryComponent implements OnInit {
 
   loadHistory() {
     this.posService.getSales().subscribe({
-      next: (data) => {
+      next: (data: any[]) => { // <--- AQUÍ
         this.sales = data;
-        this.loading = false;
       },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
+      error: (err: any) => {   // <--- Y AQUÍ
+        console.error('Error al cargar historial', err);
       }
     });
   }

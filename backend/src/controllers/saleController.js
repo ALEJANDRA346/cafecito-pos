@@ -1,88 +1,141 @@
 const Sale = require('../models/Sale');
 const Product = require('../models/Product');
 const Customer = require('../models/Customer');
+const { error, success } = require('../utils/responseHandler');
 
-// --- CREAR VENTA (Con lógica de Niveles) ---
+// --- CREAR VENTA (Cumpliendo contrato estricto) ---
 exports.createSale = async (req, res) => {
-  const { customerId, items } = req.body;
+  const { customerId, items, paymentMethod = 'cash' } = req.body;
 
   try {
-    let total = 0;
-    
-    // 1. Calcular total base y restar stock
-    for (const item of items) {
-      const product = await Product.findById(item.productId);
-      if (!product || product.stock < item.quantity) {
-        return res.status(400).json({ error: `Stock insuficiente para ${product ? product.name : 'producto'}` });
-      }
-      product.stock -= item.quantity;
-      await product.save();
-      total += product.price * item.quantity;
+    if (!items || items.length === 0) {
+      return error(res, 422, "Validation failed", [{ field: "items", message: "cannot be empty" }]);
     }
 
-    // 2. Lógica de Niveles (ACTUALIZADA: Reglas Cafecito Feliz)
+    let subtotal = 0;
+    const saleItems = [];
+
+    // 1. Validar Stock, Restar y Calcular Subtotal
+    for (const item of items) {
+      const product = await Product.findById(item.productId);
+      
+      if (!product) return error(res, 404, `Product ${item.productId} not found`);
+      if (product.stock < item.quantity) {
+        return error(res, 400, "Insufficient stock", [
+          { productId: product._id, message: `Only ${product.stock} available` }
+        ]);
+      }
+
+      // Restar stock
+      product.stock -= item.quantity;
+      await product.save();
+
+      const lineTotal = product.price * item.quantity;
+      subtotal += lineTotal;
+
+      // Guardamos info detallada para el ticket
+      saleItems.push({
+        productId: product._id,
+        productName: product.name,
+        quantity: item.quantity,
+        unitPrice: product.price,
+        lineTotal: lineTotal
+      });
+    }
+
+    // 2. Calcular Descuento
     let discountPercent = 0;
     
     if (customerId) {
       const customer = await Customer.findById(customerId);
       if (customer) {
         const count = customer.purchasesCount;
-        
-        // Regla 4: VIP (8+ compras) -> 15%
-        if (count >= 8) {
-          discountPercent = 15;
-        } 
-        // Regla 3: Frecuente (4-7 compras) -> 10%
-        else if (count >= 4) {
-          discountPercent = 10;
-        } 
-        // Regla 2: Retorno (1-3 compras) -> 5%
-        else if (count >= 1) {
-          discountPercent = 5;
-        }
-        // Regla 1: Nuevo (0 compras) -> 0% (Ya estaba en 0 por defecto)
+        if (count >= 8) discountPercent = 15;
+        else if (count >= 4) discountPercent = 10;
+        else if (count >= 1) discountPercent = 5;
 
-        // Aumentamos su contador de visitas PARA LA PRÓXIMA
+        // Actualizar contador
         customer.purchasesCount += 1;
         await customer.save();
       }
     }
 
-    // 3. Aplicar Matemáticas
-    const discountAmount = (total * discountPercent) / 100;
-    const finalTotal = total - discountAmount;
+    const discountAmount = subtotal * (discountPercent / 100);
+    const total = subtotal - discountAmount;
 
-    // 4. Guardar Venta
+    // 3. Guardar Venta en BD
     const sale = new Sale({
       customerId: customerId || null,
-      items,
-      subtotal: total,
+      items: saleItems.map(i => ({ 
+          product: i.productId, // Ajusta esto según tu modelo Sale si usas 'productId' o 'product'
+          quantity: i.quantity, 
+          price: i.unitPrice 
+      })), 
+      subtotal,
       discountPercent,
       discountAmount,
-      total: finalTotal
+      total,
+      paymentMethod
     });
 
     await sale.save();
 
-    res.status(201).json({ message: 'Venta registrada', ticket: sale });
+    // 4. CONSTRUIR RESPUESTA COMPLEJA (Según Contrato)
+    const responseData = {
+      sale_id: sale._id,
+      customer_id: customerId,
+      payment_method: paymentMethod,
+      items: saleItems,
+      subtotal: subtotal,
+      discount_percent: discountPercent,
+      discount_amount: discountAmount,
+      total: total,
+      created_at: sale.createdAt,
+      
+      // Objeto Ticket Requerido
+      ticket: {
+        saleId: sale._id,
+        timestamp: sale.createdAt,
+        storeName: "Cafecito Feliz",
+        items: saleItems.map(i => ({ 
+            name: i.productName, 
+            qty: i.quantity, 
+            unitPrice: i.unitPrice, 
+            lineTotal: i.lineTotal 
+        })),
+        subtotal: subtotal,
+        discount: `${discountPercent}% (-$${discountAmount.toFixed(2)})`,
+        total: total,
+        paymentMethod: paymentMethod
+      }
+    };
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error en el servidor' });
+    success(res, 201, responseData);
+
+  } catch (err) {
+    console.error(err);
+    error(res, 500, "Error en el servidor");
   }
 };
 
-// --- OBTENER HISTORIAL (Dashboard) ---
+// --- OBTENER HISTORIAL ---
 exports.getSales = async (req, res) => {
   try {
-    // Traemos las ventas y "reemplazamos" los IDs por nombres reales
     const sales = await Sale.find()
-      .populate('customerId', 'name email') // Trae el nombre del cliente
-      .populate('items.productId', 'name')  // Trae el nombre del producto
-      .sort({ createdAt: -1 }); // Las más nuevas primero
+      .populate('customerId', 'name email')
+      .populate('items.productId', 'name') // Ojo: verifica que en tu modelo Sale sea 'items.productId' o 'items.product'
+      .sort({ createdAt: -1 });
 
-    res.json(sales);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al obtener historial' });
+    // Mapeo simple para cumplir snake_case en lista
+    const formattedSales = sales.map(s => ({
+        sale_id: s._id,
+        total: s.total,
+        created_at: s.createdAt,
+        customer_name: s.customerId ? s.customerId.name : 'Cliente Casual'
+    }));
+
+    success(res, 200, formattedSales);
+  } catch (err) {
+    error(res, 500, 'Error al obtener historial');
   }
 };

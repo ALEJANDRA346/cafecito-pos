@@ -1,33 +1,63 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Customer } from '../models/customer.model';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class PosService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl; 
 
-  // Traer clientes para el selector
-  getCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(`${this.apiUrl}/customers`);
+  // --- CLIENTES (Con traducción snake_case -> camelCase) ---
+  getCustomers(): Observable<any[]> {
+    return this.http.get<any>(`${this.apiUrl}/customers`).pipe(
+      map(response => {
+        // El API devuelve { data: [...], total: ... }
+        return response.data.map((item: any) => ({
+          _id: item.id,
+          name: item.name,
+          email: item.phone_or_email, 
+          purchasesCount: item.purchases_count 
+        }));
+      })
+    );
   }
 
-  // --- NUEVO: Crear Cliente ---
-  createCustomer(customerData: any): Observable<Customer> {
-    return this.http.post<Customer>(`${this.apiUrl}/customers`, customerData);
+  createCustomer(data: any): Observable<any> {
+    const payload = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone
+    };
+    return this.http.post(`${this.apiUrl}/customers`, payload);
   }
 
-  // Enviar la venta al backend
+  // --- VENTAS (Crear) ---
   createSale(saleData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/sales`, saleData);
+    return this.http.post<any>(`${this.apiUrl}/sales`, saleData).pipe(
+      map(res => {
+        return {
+            ...res,
+            ticket: {
+                ...res.ticket,
+                discountPercent: res.discount_percent, 
+                discountAmount: res.discount_amount
+            }
+        };
+      })
+    );
   }
 
-  getSales(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/sales`);
+  // --- HISTORIAL (Esta es la que faltaba) ---
+  getSales(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/sales`).pipe(
+      map(sales => sales.map(sale => ({
+        // Mapeamos lo que devuelve el backend nuevo al formato viejo del front
+        _id: sale.sale_id,
+        total: sale.total,
+        createdAt: sale.created_at,
+        customerName: sale.customer_name
+      })))
+    );
+  }
 }
-}
-
