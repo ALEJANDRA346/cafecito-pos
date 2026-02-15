@@ -2,18 +2,29 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   try {
-    // 1. Buscar el token en el Header (Authorization: Bearer <token>)
+    // 1. Validar que llegue el header
+    if (!req.headers.authorization) {
+        throw new Error('No hay cabecera Authorization');
+    }
+
     const token = req.headers.authorization.split(' ')[1]; 
     
-    // 2. Verificar si es válido
-    const JWT_SECRET = process.env.JWT_SECRET || 'SECRET_KEY_SIMPLE';
+    // CORRECCIÓN 1: Usar la MISMA clave que tu login ('secreto_super_seguro')
+    const JWT_SECRET = process.env.JWT_SECRET || 'secreto_super_seguro';
     
-    // 3. Guardar datos del usuario en la petición
-    req.userData = { userId: decodedToken.userId, username: decodedToken.username, role: decodedToken.role };
+    // CORRECCIÓN 2: Crear la variable que faltaba (decodedToken)
+    const decodedToken = jwt.verify(token, JWT_SECRET);
     
-    // 4. Dejar pasar
+    // CORRECCIÓN 3: Adaptar los datos. 
+    // Tu login envía { id: ... }, así que leemos .id
+    req.userData = { 
+        userId: decodedToken.id, // El login manda 'id', lo guardamos como userId
+    };
+    
     next();
+
   } catch (error) {
-    res.status(401).json({ error: 'Autenticación fallida: Token inválido o no existe' });
+    console.error("❌ Error Auth:", error.message);
+    res.status(401).json({ error: 'Autenticación fallida: Token inválido' });
   }
 };
