@@ -64,3 +64,23 @@
   border-radius: 5px;
   color: #155724;
 }
+
+.demo-credentials {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.demo-credentials p {
+  margin: 4px 0;
+}
+
+.demo-note {
+  color: #64748b;
+  font-size: 12px;
+}
